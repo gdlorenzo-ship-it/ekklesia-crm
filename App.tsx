@@ -9,6 +9,7 @@ import MemberProfile from './pages/MemberProfile';
 import Ministries from './pages/Ministries';
 import Discipleship from './pages/Discipleship';
 import Automations from './pages/Automations';
+import UserManagement from './pages/UserManagement';
 import { Bell, LogOut, Search, User, ChevronDown } from 'lucide-react';
 
 const AppContent: React.FC = () => {
@@ -27,6 +28,7 @@ const AppContent: React.FC = () => {
       case 'members': return <Members onSelectMember={setSelectedMember} />;
       case 'ministries': return <Ministries />;
       case 'discipleship': return <Discipleship />;
+      case 'users': return <UserManagement />;
       case 'automations': return <Automations />;
       default: return <Dashboard />;
     }
@@ -49,8 +51,9 @@ const AppContent: React.FC = () => {
         {/* Header */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
           <div className="flex items-center gap-4 text-gray-400">
-             {/* Dynamic Breadcrumb Placeholder */}
-             <span className="text-gray-900 font-medium capitalize">{currentTab}</span>
+             <span className="text-gray-900 font-medium capitalize">
+               {currentTab === 'users' ? 'Gestión de Staff' : currentTab}
+             </span>
           </div>
 
           <div className="flex items-center gap-6">
@@ -69,14 +72,14 @@ const AppContent: React.FC = () => {
                 </div>
                 <div className="text-left hidden md:block">
                   <p className="text-sm font-bold text-gray-900 leading-none">{state.currentUser.nombre}</p>
-                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-tighter">{state.currentUser.role}</p>
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-tighter">{state.currentUser.role.replace('_', ' ')}</p>
                 </div>
                 <ChevronDown size={14} className="text-gray-400" />
               </button>
 
               {showRoleSelect && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-20">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase px-3 py-2">Cambiar Rol (Demo)</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase px-3 py-2">Simular otro usuario (Demo)</p>
                   {Object.values(UserRole).map(role => (
                     <button 
                       key={role}

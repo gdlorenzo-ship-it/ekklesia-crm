@@ -107,9 +107,9 @@ export const mockReminderRules: ReminderRule[] = [
     aplica_a: EventType.BIRTHDAY,
     dias_antes: 3,
     hora_envio: '09:00',
-    canal: 'email',
+    canal: 'whatsapp',
     enabled: true,
-    asunto_template: 'Recordatorio: Cumpleaños de {nombre_completo}',
+    asunto_template: 'Felicidades por tu cumple {nombre}',
     body_template: 'Hola, recordatorio: el {fecha_evento} es el cumpleaños de {nombre_completo}. Cumple {edad} años. Tel: {telefono}.'
   },
   {
@@ -118,7 +118,7 @@ export const mockReminderRules: ReminderRule[] = [
     aplica_a: EventType.ANNIVERSARY,
     dias_antes: 1,
     hora_envio: '10:00',
-    canal: 'email',
+    canal: 'whatsapp',
     enabled: true,
     asunto_template: 'Felicidades por su Aniversario: {nombre_completo}',
     body_template: 'Que Dios siga bendiciendo su hogar. El {fecha_evento} es su aniversario.'

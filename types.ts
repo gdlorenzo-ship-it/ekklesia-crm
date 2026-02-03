@@ -2,8 +2,15 @@
 export enum UserRole {
   ADMIN = 'admin',
   SECRETARIA = 'secretaria',
-  LIDER_MINISTERIO = 'lider_ministerio',
-  LECTURA = 'lectura'
+  LIDER_MINISTERIO = 'lider_ministerio'
+}
+
+export interface SystemUser {
+  id: string;
+  nombre: string;
+  email: string;
+  role: UserRole;
+  activo: boolean;
 }
 
 export enum PersonStatus {
@@ -162,7 +169,7 @@ export interface ReminderRule {
   aplica_a: EventType;
   dias_antes: number;
   hora_envio: string;
-  canal: 'email' | 'whatsapp' | 'both';
+  canal: 'whatsapp'; // Restricted to WhatsApp only
   enabled: boolean;
   asunto_template: string;
   body_template: string;

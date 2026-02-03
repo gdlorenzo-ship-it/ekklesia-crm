@@ -3,7 +3,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { 
   Member, Family, FamilyRelation, Ministry, MinistryAssignment, 
   DiscipleshipStage, DiscipleshipProgress, FollowUp, Task, 
-  ReminderRule, NotificationLog, ChurchEvent, UserRole
+  ReminderRule, NotificationLog, ChurchEvent, UserRole, SystemUser
 } from './types';
 import { 
   mockMembers, mockFamilies, mockFamilyRelations, mockMinistries, 
@@ -24,6 +24,7 @@ interface State {
   reminderRules: ReminderRule[];
   notificationLogs: NotificationLog[];
   events: ChurchEvent[];
+  systemUsers: SystemUser[];
   currentUser: { id: string; nombre: string; role: UserRole };
 }
 
@@ -31,10 +32,13 @@ type Action =
   | { type: 'SET_ROLE', payload: UserRole }
   | { type: 'ADD_MEMBER', payload: Member }
   | { type: 'UPDATE_MEMBER', payload: Member }
+  | { type: 'DELETE_MEMBER', payload: string }
   | { type: 'ADD_FOLLOW_UP', payload: FollowUp }
   | { type: 'ADD_TASK', payload: Task }
   | { type: 'UPDATE_TASK', payload: Task }
-  | { type: 'ADD_LOG', payload: NotificationLog };
+  | { type: 'ADD_LOG', payload: NotificationLog }
+  | { type: 'ADD_SYSTEM_USER', payload: SystemUser }
+  | { type: 'DELETE_SYSTEM_USER', payload: string };
 
 const initialState: State = {
   members: mockMembers,
@@ -49,17 +53,25 @@ const initialState: State = {
   reminderRules: mockReminderRules,
   notificationLogs: [],
   events: [],
+  systemUsers: [
+    { id: 'u1', nombre: 'Pastor Juan Pérez', email: 'juan@ekklesia.com', role: UserRole.ADMIN, activo: true },
+    { id: 'u2', nombre: 'Ana Secretaria', email: 'ana@ekklesia.com', role: UserRole.SECRETARIA, activo: true },
+    { id: 'u3', nombre: 'Carlos Líder', email: 'carlos@ekklesia.com', role: UserRole.LIDER_MINISTERIO, activo: true }
+  ],
   currentUser: currentUser
 };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_ROLE':
-      return { ...state, currentUser: { ...state.currentUser, role: action.payload } };
+      const newCurrentUser = state.systemUsers.find(u => u.role === action.payload) || state.currentUser;
+      return { ...state, currentUser: { ...state.currentUser, role: action.payload, nombre: newCurrentUser.nombre } };
     case 'ADD_MEMBER':
       return { ...state, members: [...state.members, action.payload] };
     case 'UPDATE_MEMBER':
       return { ...state, members: state.members.map(m => m.id === action.payload.id ? action.payload : m) };
+    case 'DELETE_MEMBER':
+      return { ...state, members: state.members.filter(m => m.id !== action.payload) };
     case 'ADD_FOLLOW_UP':
       return { ...state, followUps: [...state.followUps, action.payload] };
     case 'ADD_TASK':
@@ -68,6 +80,10 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, tasks: state.tasks.map(t => t.id === action.payload.id ? action.payload : t) };
     case 'ADD_LOG':
       return { ...state, notificationLogs: [...state.notificationLogs, action.payload] };
+    case 'ADD_SYSTEM_USER':
+      return { ...state, systemUsers: [...state.systemUsers, action.payload] };
+    case 'DELETE_SYSTEM_USER':
+      return { ...state, systemUsers: state.systemUsers.filter(u => u.id !== action.payload) };
     default:
       return state;
   }
@@ -78,13 +94,10 @@ const AppContext = createContext<{ state: State; dispatch: React.Dispatch<Action
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Simulated daily job
   useEffect(() => {
     const runDailyAutomation = () => {
       console.log('Running daily automation check...');
-      // Logic for detecting events and creating notification logs would go here
     };
-    
     runDailyAutomation();
   }, []);
 
